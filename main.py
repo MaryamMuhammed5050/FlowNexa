@@ -4,24 +4,36 @@ def save_request(trigger):
         file.write(trigger + "\n")
         print(f"your request has been saved: {trigger}")
 
-# print("Welcome to FlowNexa, a place for easy automations.")
-
-# while True:
-#     trigger = input("what do you want to do?\n")
-#     if trigger == "exit":
-#         break
-#     if "workflow" in trigger:
-#         print(f"Your request has been received, workflow started: {trigger}")
-
-
-#     elif "email" in trigger:
-#         print(f"email action has been selected: {trigger}")
-#     else:
-#         print("kindly make another request")
+def send_email(trigger):
+    print(f"a confirmation email has been sent to you: {order}")
 
 
 def create_order(trigger):
-    print("input your order")
+    order = input("what would you like to order?\n")
+    print(f"your order has been taken: {order}")
 
-def send_email(trigger):
-    print("email action")
+    with open("order.txt", "a") as file:
+        file.write(order + "\n")
+        print(f"your order has been saved: {order}")
+
+
+
+print("Welcome to FlowNexa, a place for easy automations.")
+
+while True:
+    trigger = input("what do you want to do?\n")
+    if trigger == "exit":
+        break
+    if "workflow" in trigger:
+        print(f"Your request has been received, workflow started: {trigger}")
+
+
+    elif "email" in trigger:
+        send_email(trigger)
+
+    elif "order" in trigger:
+        create_order(trigger)
+    else:
+        print("kindly make another request")
+
+
