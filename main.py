@@ -4,16 +4,26 @@ def wants_order(trigger):
     trigger = trigger.lower()
 
     negative_order = re.search(
-        r"\b(?:don't|do not|didn't|did not|doesn't|does not|"
-        r"won't|will not|wouldn't|would not|can't|cannot|"
+        r"\b(?:don't|dont|do not|didn't|didnt|did not|"
+        r"doesn't|doesnt|does not|won't|wont|will not|"
+        r"wouldn't|wouldnt|would not|can't|cant|cannot|"
         r"never|no|not)\b"
         r"(?:\s+\w+){0,6}\s+\b(?:order|ordering)\b",
         trigger
-)
-if negative_order:
-    return False
+    )
 
-return "order" in trigger
+    if negative_order:
+        return False
+
+    positive_order = re.search(
+        r"\b(?:want|wants|would like|need|needs|place|placing|"
+        r"make|making|buy|buying|purchase|purchasing)\b"
+        r"(?:\s+\w+){0,5}\s+\b(?:order|ordering)\b",
+        trigger
+    )
+
+    return bool(positive_order)
+
 def save_request(trigger):
 
     with open("request.txt", "a") as file:
