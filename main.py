@@ -1,3 +1,15 @@
+import received
+
+def wants_order(trigger):
+    trigger = trigger.lower()
+
+  negative_order = re.search(
+    r"\b(?:don't|do not|didn't|did not|doesn't|does not|"
+    r"won't|will not|wouldn't|would not|can't|cannot|"
+    r"never|no|not)\b"
+    r"(?:\s+\w+){0,6}\s+\b(?:order|ordering)\b",
+    trigger
+)
 def save_request(trigger):
 
     with open("request.txt", "a") as file:
@@ -11,7 +23,7 @@ def send_email(trigger):
         file.write(trigger + "\n")
         print(f"your email has been saved: {trigger}")
 
-
+ 
 def create_order(trigger):
     order = input("what would you like to order?\n")
     print(f"your order has been taken: {trigger}")
