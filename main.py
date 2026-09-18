@@ -42,9 +42,21 @@ def create_order(trigger):
     order = input("what would you like to order?\n")
     print(f"your order has been taken: {trigger}")
 
+    order = re.sub(
+        r"^(?:i\s+)?(?:want\s+to\s+|would\s+like\s+to\s+|need\s+to\s+|"
+        r"would\s+like\s+|want\s+|need\s+|place\s+|placing\s+|"
+        r"make\s+|making\s+|buy\s+|buying\s+|purchase\s+|purchasing\s+)?"
+        r"(?:an?\s+)?order\s+",
+        "",
+        order,
+        flags=re.IGNORECASE
+    )
+
     with open("order.txt", "a") as file:
         file.write(order + "\n")
-        print(f"your order has been saved: {trigger}")
+
+        print(f"your order has been taken: {order}")
+        print(f"your order has been saved: {order}")
 
 
 
@@ -52,7 +64,7 @@ print("Welcome to FlowNexa, a place for easy automations.")
 
 while True:
     trigger = input("what do you want to do?\n")
-    if trigger == "exit":
+    if trigger.lower() == "exit":
         break
     action_taken = False
     actions = []
@@ -77,6 +89,6 @@ while True:
     # else:
     #     print("kindly make another request")
     if not action_taken:
-        print("kindly input a new request")
+        print("kindly input a new request.")
 
-    print(f"actions detected: {actions}")
+    print(f"Actions detected: {actions}")
