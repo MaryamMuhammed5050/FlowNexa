@@ -1,6 +1,6 @@
 import re
 
-def wants_order(trigger):
+def get_order_intent(trigger):
     trigger = trigger.lower()
 
     negative_order = re.search(
@@ -8,21 +8,26 @@ def wants_order(trigger):
         r"doesn't|doesnt|does not|won't|wont|will not|"
         r"wouldn't|wouldnt|would not|can't|cant|cannot|"
         r"never|no|not)\b"
-        r"(?:\s+\w+){0,6}\s+\b(?:order|ordering)\b",
+        r"(?:\s+\w+){0,6}\s+\b(?:order|ordering|buy|buying|"
+        r"purchase|purchasing)\b",
         trigger
     )
 
     if negative_order:
-        return False
+        return "negative"
 
     positive_order = re.search(
         r"\b(?:want|wants|would like|need|needs|place|placing|"
         r"make|making|buy|buying|purchase|purchasing)\b"
-        r"(?:\s+\w+){0,5}\s+\b(?:order|ordering)\b",
+        r"(?:\s+\w+){0,5}\s+\b(?:order|ordering|buy|buying|"
+        r"purchase|purchasing)\b",
         trigger
     )
 
-    return bool(positive_order)
+    if positive_order:
+        return "positive"
+
+    return "unknown"
 
 def save_request(trigger):
 
@@ -40,7 +45,7 @@ def send_email(trigger):
  
 def create_order(trigger):
     order = input("what would you like to order?\n")
-    print(f"your order has been taken: {trigger}")
+    # print(f"your order has been taken: {trigger}")
 
     order = re.sub(
         r"^(?:i\s+)?(?:want\s+to\s+|would\s+like\s+to\s+|need\s+to\s+|"
@@ -55,18 +60,20 @@ def create_order(trigger):
     with open("order.txt", "a") as file:
         file.write(order + "\n")
 
-        print(f"your order has been taken: {order}")
+        # print(f"your order has been taken: {order}")
         print(f"your order has been saved: {order}")
+def is_negative_order(trigger):
 
 
 
-print("Welcome to FlowNexa, a place for easy automations.")
+    print("Welcome to FlowNexa, a place for easy automations.")
 
 while True:
     trigger = input("what do you want to do?\n")
     if trigger.lower() == "exit":
         break
     action_taken = False
+    request_understood = False
     actions = []
 
      
@@ -82,13 +89,20 @@ while True:
         actions.append("email")
         action_taken = True
 
-    if wants_order(trigger):
-        create_order(trigger)
+    order_intent = get_order_intent(trigger)
+
+    if order_intent == "positive":
+        create_order()
         actions.append("order")
         action_taken = True
+        request_understood = True
+
+    elif order_intent == "negative":
+        print("Okay, no order will be placed.")
+        request_understood = True
     # else:
     #     print("kindly make another request")
-    if not action_taken:
-        print("kindly input a new request.")
+if not request_understood:
+    print("kindly input a new request.")
 
     print(f"Actions detected: {actions}")
