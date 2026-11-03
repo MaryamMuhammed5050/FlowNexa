@@ -14,7 +14,7 @@ if not api_key:
 client = genai.Client(api_key=api_key)
 
 response = client.models.generate_content(
-    model="gemini-3.6-flash",
+    model="gemini-3.8-flash",
     contents="""
     Analyse this request:
     I want to compare the prices of two phones.
