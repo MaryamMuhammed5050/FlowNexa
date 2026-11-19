@@ -1,4 +1,3 @@
-
 import sqlite3
 
 DATABASE_NAME = "flownexa.db"
@@ -10,9 +9,18 @@ def get_connection():
 
 
 def initialize_database():
-    """Create the messages table if it doesn't exist."""
+    """Create the database tables if they don't exist."""
 
     with get_connection() as connection:
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         connection.execute("""
             CREATE TABLE IF NOT EXISTS messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
