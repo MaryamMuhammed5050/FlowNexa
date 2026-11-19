@@ -1,4 +1,6 @@
 import sqlite3
+import hashlib
+import secrets
 
 DATABASE_NAME = "flownexa.db"
 
@@ -7,7 +9,17 @@ def get_connection():
     """Connect to the FlowNexa database."""
     return sqlite3.connect(DATABASE_NAME)
 
+def hash_password(password):
+    salt = secrets.token_bytes(16)
 
+    password_hash = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt,
+        600000
+    )
+
+    return salt.hex() + ":" + password_hash.hex()
 def initialize_database():
     """Create the database tables if they don't exist."""
 
