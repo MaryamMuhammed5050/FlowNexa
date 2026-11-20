@@ -109,3 +109,22 @@ def register_user(username, password):
 
     except sqlite3.IntegrityError:
         return "Username already exists."
+
+def verify_password(password, stored_hash):
+    try:
+        salt_hex, hash_hex = stored_hash.split(":")
+
+        salt = bytes.fromhex(salt_hex)
+        original_hash = bytes.fromhex(hash_hex)
+
+        new_hash = hashlib.pbkdf2_hmac(
+            "sha256",
+            password.encode("utf-8"),
+            salt,
+            600000
+        )
+
+        return secrets.compare_digest(new_hash, original_hash)
+
+    except (ValueError, TypeError, AttributeError):
+        return False
