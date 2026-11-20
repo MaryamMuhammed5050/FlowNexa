@@ -86,3 +86,26 @@ def clear_history():
 
 
 initialize_database()
+
+def register_user(username, password):
+    username = username.strip()
+
+    if not username or not password:
+        return "Username and password cannot be empty."
+
+    password_hash = hash_password(password)
+
+    try:
+        with get_connection() as connection:
+            connection.execute(
+                """
+                INSERT INTO users (username, password_hash)
+                VALUES (?, ?)
+                """,
+                (username, password_hash)
+            )
+
+        return "Registration successful!"
+
+    except sqlite3.IntegrityError:
+        return "Username already exists."
