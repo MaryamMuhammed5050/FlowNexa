@@ -128,3 +128,29 @@ def verify_password(password, stored_hash):
 
     except (ValueError, TypeError, AttributeError):
         return False
+
+def login_user(username, password):
+    with get_connection() as connection:
+        cursor = connection.execute(
+            """
+            SELECT id, username, password_hash
+            FROM users
+            WHERE username = ?
+            """,
+            (username,)
+        )
+
+        user = cursor.fetchone()
+
+    if user is None:
+        return None
+
+    user_id, stored_username, password_hash = user
+
+    if not verify_password(password, password_hash):
+        return None
+
+    return {
+        "id": user_id,
+        "username": stored_username
+    }
